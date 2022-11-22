@@ -1,5 +1,7 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.mygdx.game.TankStars;
@@ -11,8 +13,8 @@ public class DesktopLauncher {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setForegroundFPS(60);
 		config.setTitle("TankStars");
-		config.setWindowedMode(TankStars.WIDTH,TankStars.HEIGHT);
 
+//		config.setWindowedMode(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
 		new Lwjgl3Application(new TankStars(), config);
 	}
 }

@@ -9,6 +9,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Bezier;
 import com.badlogic.gdx.math.CatmullRomSpline;
@@ -35,6 +36,20 @@ public class GameScreen extends ApplicationAdapter implements Screen  {
     float x;
     float y;
     TankStars game;
+    Texture back_ground;
+    Texture terrain;
+    Animation<TextureRegion> rain;
+    float del=0;
+    Animation<TextureRegion> thunder;
+    float delt=0;
+
+    Texture PauseScreen;
+
+    PauseMenu p;
+    boolean xt=false;
+
+    private Texture healthbarp1;
+    private Texture healthbarp2;
 
     public GameScreen(TankStars game){
         this.game = game;
@@ -43,60 +58,30 @@ public class GameScreen extends ApplicationAdapter implements Screen  {
     }
     @Override
     public void create(){
-        int width = Gdx.graphics.getWidth();
-        int height = Gdx.graphics.getHeight();
-        int points = 4;
-        Vector2[] controlPoints = new Vector2[points];
-        for(int i=0;i<points;i++){
-            int x = (int) (Math.random() * width);
-            int y = (int) (Math.random() * height);
-            Vector2 point = new Vector2(x,y);
-            controlPoints[i] = point;
-        }
 
-        path1 = new Bezier<Vector2>(controlPoints);
-        path2 = new CatmullRomSpline<Vector2>(controlPoints,true);
 
-        sr = new ShapeRenderer();
-        sr.setAutoShapeType(true);
+
     }
-    @Override
-    public void render(){
-        ScreenUtils.clear(0, 0, 0, 1);
-        sr.begin();
-        sr.setColor(Color.WHITE);
 
-        for(int i=0;i<100;++i){
-            float t = i/100f;
-            Vector2 st = new Vector2();
-            Vector2 end = new Vector2();
-
-            path1.valueAt(st,t);
-            path1.valueAt(end, t - 0.01f);
-            sr.line(st.x,st.y,end.x,end.y);
-        }
-
-        sr.setColor(Color.RED);
-        for(int i =0;i<100;++i){
-            float t = i/100f;
-            Vector2 st = new Vector2();
-            Vector2 end = new Vector2();
-            path2.valueAt(st,t);
-            path2.valueAt(end,t-0.01f);
-            sr.line(st.x,st.y,end.x,end.y);
-        }
-        sr.end();
-    }
     @Override
     public void show() {
     foreground = new Texture("asd.jpg");
     Frost_tank = new Texture("Frost.png");
     Abrams_tank = new Texture("Abrams.jpg");
     health_bar = new Texture("health_bar.png");
+    back_ground=new Texture("backg.png");
+    terrain=new Texture("Heightmap.png");
+    rain=GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("rain.gif").read());
+    thunder=GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("thunder.gif").read());
+//    PauseScreen=new Texture(("pause_menu.png"));
+        p=new PauseMenu(game,"pause_menu.png","resume_pause_menu.png","exit_pause_menu.png","restart_pause_menu.png");
+
     }
 
     @Override
     public void render(float delta) {
+
+        del+= Gdx.graphics.getDeltaTime();
         if(Gdx.input.isKeyPressed((Input.Keys.LEFT))){
             x = x - speed* Gdx.graphics.getDeltaTime();
             if(x<0){
@@ -111,9 +96,37 @@ public class GameScreen extends ApplicationAdapter implements Screen  {
         }
         ScreenUtils.clear(0, 0, 0, 1);
         game.batch.begin();
-        game.batch.draw(foreground,0 ,0, TankStars.WIDTH,TankStars.HEIGHT);
-        game.batch.draw(Abrams_tank,x,y,75,75);
-        game.batch.draw(health_bar,0,100,100,50);
+
+        game.batch.draw(back_ground,-10,100,800,300);
+        game.batch.draw(rain.getKeyFrame(del), -10, 100,800,300);
+//        game.batch.draw(PauseScreen,100,100,800,300);
+
+
+        game.batch.draw(terrain,-10,100,800,380);
+        if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) xt=xt==true?false:true;
+
+        if(xt==true){
+            game.batch.draw(p.getPauseScreen(), 80, 50, 500, 400);
+            game.batch.draw(p.getResume(),180,200,300,200);
+            game.batch.draw(p.getRestart(),180,150,300,200);
+            game.batch.draw(p.getExit(),180,100,300,200);
+
+        }
+
+
+
+
+//        if(Gdx.input.isKeyPressed(Input.Keys.X)) {
+//            this.dispose();
+//            game.setScreen(new PauseMenu(game));
+////            if(Gdx.input.isKeyPressed(Input.Keys.X)){
+////                game.setScreen(new GameScreen(game));
+////            }
+//
+//        }
+
+
+
         game.batch.end();
     }
 
@@ -139,7 +152,7 @@ public class GameScreen extends ApplicationAdapter implements Screen  {
 
     @Override
     public void dispose() {
-        game.batch.dispose();
+//        game.batch.dispose();
 
     }
 }
