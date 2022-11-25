@@ -13,7 +13,6 @@ public class TankStars extends Game {
 	public void create () {
 		batch = new SpriteBatch();
 		this.setScreen(new MainMenuScreen(this));
-
 	}
 
 	@Override

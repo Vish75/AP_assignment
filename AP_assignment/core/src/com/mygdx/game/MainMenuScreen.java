@@ -43,9 +43,13 @@ public class MainMenuScreen extends ApplicationAdapter implements Screen {
     float del=0;
 
     Music theme_music;
+    SplashScreen splashScreen;
+    boolean showsplash=true;
 
     private OrthographicCamera gamecam;
     private Viewport gameport;
+
+    private SelectionScreen select;
 
     public MainMenuScreen(TankStars game){
         this.game = game;
@@ -60,10 +64,18 @@ public class MainMenuScreen extends ApplicationAdapter implements Screen {
         Tank_STARS_LOGO=new Texture("TANK_STARS.jpg");
         sound_game=new Buttons("sound.png",50,100);
         theme_music= Gdx.audio.newMusic(Gdx.files.internal("main_menu_theme.mp3"));
+
         music_playing=setTheme_music(true);
+        select=new SelectionScreen("bkg_SelectionScreen.png","Step_Tank.gif","Select_Left.png","Select_Right.png","Select_P1.png");
+        splashScreen=new SplashScreen("loadscreen.jpg","load-unscreen.gif","dufhs");
+
+
 
 //        gamecam=new OrthographicCamera();
-//        gameport=new FitViewport(Gdx.graphics.,Gdx.graphics.getHeight(),100,gamecam);
+//        gameport=new FitViewport(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),gamecam);
+//        gameport.apply();
+//        gamecam.position.set(Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/2,0);
+//        gamecam.update();
 
     }
 
@@ -93,34 +105,48 @@ public class MainMenuScreen extends ApplicationAdapter implements Screen {
         ScreenUtils.clear(0, 0, 0, 0);
 //        game.batch.setProjectionMatrix(gamecam.combined);
         game.batch.begin();
-
-        game.batch.draw(background,0,0,700,500);
-
-        game.batch.draw(Tank_STARS_LOGO,0,0,450,80);
-
-        game.batch.draw(menu_bar,350,-50,400,550);
-        game.batch.draw(menu_tanks.getKeyFrame(del), -200, 40,800,300);
-        game.batch.draw(resume_button.getButton_look(),410,200,resume_button.getWidth(),resume_button.getHeight());
-        game.batch.draw(exit_button.getButton_look(),380,-20,exit_button.getWidth(),exit_button.getHeight());
-        game.batch.draw(new_game.getButton_look(),380,70,new_game.getWidth(),new_game.getHeight());
-        game.batch.draw(sound_game.getButton_look(),-20,425,sound_game.getWidth(),sound_game.getHeight());
-//        game.batch.draw(sound_game.getButton_look(),Gdx.input.getX()-30,470-Gdx.input.getY(),sound_game.getWidth(),sound_game.getHeight());
-        int mousex=Gdx.input.getX()-30;
-        int mousey=470-Gdx.input.getY();
-        if(mousex>-20 && mousex<-20+ sound_game.getWidth() && mousey<425+ sound_game.getHeight() && mousey>425){
-            if(Gdx.input.isTouched()) {
-                if (music_playing == true) music_playing = setTheme_music(false);
-                else music_playing = setTheme_music(true);
-
-            }
+        //splashscreen
+        if(showsplash){
+            game.batch.draw(splashScreen.getSplash(),0,0,700,500);
+            game.batch.draw(splashScreen.getLoadbar().getKeyFrame(del),180,45,300,300);
+            if(Gdx.input.isKeyPressed(Input.Keys.ENTER)) showsplash=false;
         }
-        int x = TankStars.WIDTH/2 - (int)new_game.getWidth()/2;
-        if(Gdx.input.getX()< 380 + new_game.getWidth() && Gdx.input.getX()>380 && Gdx.input.getY() < (70 + new_game.getHeight()) && TankStars.HEIGHT-Gdx.input.getY()> 70){
+        else {
+            game.batch.draw(background, 0, 0, 700, 500);
 
+            game.batch.draw(Tank_STARS_LOGO, 0, 0, 450, 80);
 
-            if(Gdx.input.isTouched()){
-                this.dispose();
-                game.setScreen(new GameScreen(game));
+            game.batch.draw(menu_bar, 350, -50, 400, 550);
+            game.batch.draw(menu_tanks.getKeyFrame(del), -200, 40, 800, 300);
+            game.batch.draw(resume_button.getButton_look(), 410, 200, resume_button.getWidth(), resume_button.getHeight());
+            game.batch.draw(exit_button.getButton_look(), 380, -20, exit_button.getWidth(), exit_button.getHeight());
+            game.batch.draw(new_game.getButton_look(), 380, 70, new_game.getWidth(), new_game.getHeight());
+            game.batch.draw(sound_game.getButton_look(), -20, 425, sound_game.getWidth(), sound_game.getHeight());
+            game.batch.draw(sound_game.getButton_look(), Gdx.input.getX() - 30, 470 - Gdx.input.getY(), sound_game.getWidth(), sound_game.getHeight());
+            int mousex = Gdx.input.getX() - 30;
+            int mousey = 470 - Gdx.input.getY();
+            if (mousex > -20 && mousex < -20 + sound_game.getWidth() && mousey < 425 + sound_game.getHeight() && mousey > 425) {
+                if (Gdx.input.isTouched()) {
+                    if (music_playing == true) music_playing = setTheme_music(false);
+                    else music_playing = setTheme_music(true);
+
+                }
+            }
+            int x = TankStars.WIDTH / 2 - (int) new_game.getWidth() / 2;
+            if (Gdx.input.getX() < 380 + new_game.getWidth() && Gdx.input.getX() > 380 && Gdx.input.getY() < (70 + new_game.getHeight()) && TankStars.HEIGHT - Gdx.input.getY() > 70) {
+                if (Gdx.input.isTouched()) {
+                    this.dispose();
+                    game.setScreen(new GameScreen(game));
+                }
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+                Texture forced = new Texture("forced_white_bg.png");
+                game.batch.draw(select.getBkg(), -30, 0, 700, 500);
+                game.batch.draw(select.getTank().getKeyFrame(del), 50, 30, 500, 200);
+                game.batch.draw(select.getLeft().getButton_look(), -15, 30, select.getLeft().getWidth(), select.getLeft().getHeight());
+                game.batch.draw(select.getRight().getButton_look(), 500, 30, select.getRight().getWidth(), select.getRight().getHeight());
+                game.batch.draw(forced, 180, 370, 280, 80);
+                game.batch.draw(select.getPlayer().getButton_look(), 130, 300, select.getPlayer().getWidth(), select.getPlayer().getHeight());
             }
         }
 
@@ -162,6 +188,7 @@ public class MainMenuScreen extends ApplicationAdapter implements Screen {
     @Override
     public void resize(int width, int height) {
 //        gameport.update(width,height);
+
     }
 
     @Override

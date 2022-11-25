@@ -29,6 +29,7 @@ public class GameScreen extends ApplicationAdapter implements Screen  {
     Texture foreground;
     Texture Frost_tank;
     Texture Abrams_tank;
+    Texture vslogo;
     public static final int TankWidth = 51;
     public static final int TankHeight = 96;
     Animation[] rolls;
@@ -38,6 +39,11 @@ public class GameScreen extends ApplicationAdapter implements Screen  {
     TankStars game;
     Texture back_ground;
     Texture terrain;
+
+    Animation<TextureRegion> tank;
+    Texture p1tank;
+    Texture p2tank;
+
     Animation<TextureRegion> rain;
     float del=0;
     Animation<TextureRegion> thunder;
@@ -46,10 +52,20 @@ public class GameScreen extends ApplicationAdapter implements Screen  {
     Texture PauseScreen;
 
     PauseMenu p;
+    GameOver go;
     boolean xt=false;
+    boolean gt=false;
 
     private Texture healthbarp1;
     private Texture healthbarp2;
+
+    Texture bomb1;
+    Texture bomb2;
+    Texture bomb3;
+
+    Texture p1fuel;
+    Texture p2fuel;
+
 
     public GameScreen(TankStars game){
         this.game = game;
@@ -71,10 +87,23 @@ public class GameScreen extends ApplicationAdapter implements Screen  {
     health_bar = new Texture("health_bar.png");
     back_ground=new Texture("backg.png");
     terrain=new Texture("Heightmap.png");
+    tank=GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP,Gdx.files.internal("p1_tank.gif").read());
     rain=GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("rain.gif").read());
     thunder=GifDecoder.loadGIFAnimation(Animation.PlayMode.LOOP, Gdx.files.internal("thunder.gif").read());
+    p1tank=new Texture("p1_tank.png");
+    p2tank=new Texture("p2_tank.png");
+    healthbarp1=new Texture("health_bar.png");
+    healthbarp2=new Texture("health_bar.png");
+    vslogo=new Texture("vslogo.png");
+    bomb1=new Texture("Freeze_Bomb.png");
+    bomb2=new Texture("fire_bomb.png");
+    bomb3=new Texture("dash_bomb.png");
+    p1fuel=new Texture("fuel.png");
+    p2fuel=new Texture("fuel.png");
+
 //    PauseScreen=new Texture(("pause_menu.png"));
         p=new PauseMenu(game,"pause_menu.png","resume_pause_menu.png","exit_pause_menu.png","restart_pause_menu.png");
+        go=new GameOver(game,"Game_Over.png","pause_menu.png","exit_pause_menu.png","restart_pause_menu.png");
 
     }
 
@@ -99,10 +128,28 @@ public class GameScreen extends ApplicationAdapter implements Screen  {
 
         game.batch.draw(back_ground,-10,100,800,300);
         game.batch.draw(rain.getKeyFrame(del), -10, 100,800,300);
+
 //        game.batch.draw(PauseScreen,100,100,800,300);
 
 
         game.batch.draw(terrain,-10,100,800,380);
+//        game.batch.draw(tank.getKeyFrame(del),20,200,200,100);
+        game.batch.draw(p1tank,40,240,90,70);
+        game.batch.draw(p2tank,400,240,90,70);
+        game.batch.draw(vslogo,240,370,200,100);
+        game.batch.draw(healthbarp1,100,415,200,30);
+        game.batch.draw(healthbarp2,380,415,200,30);
+        game.batch.draw(bomb1,10,40,40,40);
+        game.batch.draw(bomb2,40,40,40,40);
+        game.batch.draw(bomb3,70,40,40,40);
+
+        game.batch.draw(bomb1,530,40,40,40);
+        game.batch.draw(bomb2,560,40,40,40);
+        game.batch.draw(bomb3,590,40,40,40);
+        game.batch.draw(p1fuel,40,280,80,50);
+        game.batch.draw(p2fuel,410,280,80,50);
+
+
         if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) xt=xt==true?false:true;
 
         if(xt==true){
@@ -110,7 +157,14 @@ public class GameScreen extends ApplicationAdapter implements Screen  {
             game.batch.draw(p.getResume(),180,200,300,200);
             game.batch.draw(p.getRestart(),180,150,300,200);
             game.batch.draw(p.getExit(),180,100,300,200);
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.G)) gt=gt==true?false:true;
 
+        if(gt==true){
+            game.batch.draw(go.getBkg(),-300,-100,1500,700);
+            game.batch.draw(go.getGameOverScreen(), 80, 100, 500, 400);
+            game.batch.draw(go.getRestart(),50,0,300,200);
+            game.batch.draw(go.getExit(),310,0,300,200);
         }
 
 

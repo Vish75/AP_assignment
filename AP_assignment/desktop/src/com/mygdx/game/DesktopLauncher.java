@@ -13,8 +13,7 @@ public class DesktopLauncher {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setForegroundFPS(60);
 		config.setTitle("TankStars");
-
-//		config.setWindowedMode(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+//		config.setWindowedMode(1500,900);
 		new Lwjgl3Application(new TankStars(), config);
 	}
 }
